@@ -21,10 +21,38 @@ function App() {
   const location = useLocation();
   const { i18n } = useTranslation();
 
+  const getPageBackgroundClass = (pathname) => {
+    if (pathname === "/") return "page-bg-products";
+    if (pathname.startsWith("/products/")) return "page-bg-product-details";
+    if (
+      ["/login", "/register", "/forgot-password", "/reset-password"].includes(
+        pathname,
+      )
+    ) {
+      return "page-bg-auth";
+    }
+    if (pathname === "/cart") return "page-bg-cart";
+    if (pathname === "/checkout") return "page-bg-checkout";
+    if (pathname === "/invoices") return "page-bg-invoices";
+    if (pathname === "/admin") return "page-bg-admin";
+    return "page-bg-default";
+  };
+
   useEffect(() => {
     document.documentElement.lang = i18n.language;
     document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);
+
+  useEffect(() => {
+    const body = document.body;
+    const nextClass = getPageBackgroundClass(location.pathname);
+
+    Array.from(body.classList)
+      .filter((className) => className.startsWith("page-bg-"))
+      .forEach((className) => body.classList.remove(className));
+
+    body.classList.add(nextClass);
+  }, [location.pathname]);
 
   return (
     <>
